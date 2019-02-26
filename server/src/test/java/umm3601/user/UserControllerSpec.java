@@ -62,7 +62,7 @@ public class UserControllerSpec {
 
 
     userDocuments.insertMany(testUsers);
-    userDocuments.Update build status linkinsertOne(Document.parse(sam.toJson()));
+    userDocuments.insertOne(Document.parse(sam.toJson()));
 
     // It might be important to construct this _after_ the DB is set up
     // in case there are bits in the constructor that care about the state
@@ -107,7 +107,7 @@ public class UserControllerSpec {
 
   @Test
   public void getUsersWhoAre37() {
-    Map<String, StUpdate build status linkring[]> argMap = new HashMap<>();
+    Map<String, String[]> argMap = new HashMap<>();
     argMap.put("age", new String[]{"37"});
     String jsonResult = userController.getUsers(argMap);
     BsonArray docs = parseJsonArray(jsonResult);

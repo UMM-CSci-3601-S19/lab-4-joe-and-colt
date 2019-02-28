@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 
 import {Observable} from 'rxjs/Observable';
 
@@ -8,9 +8,10 @@ import {environment} from '../../environments/environment';
 
 @Injectable()
 export class TodoListService {
-  readonly todoUrl: string = environment.API_URL + 'todos';
+  readonly baseUrl: string = environment.API_URL + 'todo';
+  private todoUrl: string = this.baseUrl;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private http: HttpClient) {
   }
 
   getTodos(): Observable<Todo[]> {
@@ -19,5 +20,21 @@ export class TodoListService {
 
   getTodoById(id: string): Observable<Todo> {
     return this.httpClient.get<Todo>(this.todoUrl + '/' + id);
+  }
+
+  addNewTodo(newTodo: Todo): Observable<string> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        // We're sending JSON
+        'Content-Type': 'application/json'
+      }),
+      // But we're getting a simple (text) string in response
+      // The server sends the hex version of the new user back
+      // so we know how to find/access that user again later.
+      responseType: 'text' as 'json'
+    };
+
+    // Send post request to add a new user with the user data as the body with specified headers.
+    return this.http.post<string>(this.todoUrl + '/new', newTodo, httpOptions);
   }
 }

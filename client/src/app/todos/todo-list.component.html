@@ -1,3 +1,7 @@
+<div>
+  <button id="addNewTodo" mat-raised-button (click)="openDialog()">Add New Todo</button>
+</div>
+
 <div layout-gt-sm="row">
   <div flex-gt-sm="80" flex-offset-gt-sm="10">
     <mat-card>
@@ -8,7 +12,7 @@
           <input matInput id="todoOwner" #input placeholder="Filter by owner" (input)="todoOwner = $event.target.value">
         </mat-form-field>
         <mat-form-field>
-          <input matInput id="todoStatus" #input placeholder="Filter by status" (input)="todoStatus = $event.target.value">
+          <input matInput id="todoStatus" #input placeholder="Filter by status(complete/incomplete)" (input)="todoStatus = $event.target.value">
         </mat-form-field>
         <mat-form-field>
           <input matInput id="todoBody" #input placeholder="Filter by body" (input)="todoBody = $event.target.value">
@@ -17,20 +21,19 @@
           <input matInput id="todoCategory" #input placeholder="Filter by category" (input)="todoCategory = $event.target.value">
         </mat-form-field>
 
-
         <!--<mat-form-field>-->
         <!--<input matInput id="todoCompany" #input type="text" placeholder="Search for company" (input)="contentChange($event.target.value)">-->
         <!--</mat-form-field>-->
 
         <mat-accordion *ngIf="todos; else todosError">
-          <mat-expansion-panel #elem [id]="todo.owner" *ngFor="let todo of this.filterTodos(todoOwner, todoStatus, todoBody, todoCategory)">
+          <mat-expansion-panel #elem [id]="todo.$oid" *ngFor="let todo of this.filterTodos(todoOwner, todoStatus, todoBody, todoCategory)">
             <mat-expansion-panel-header>
 
-              <mat-panel-title matTooltip="owner: {{todo.owner}}">{{todo.owner}} </mat-panel-title>
+              <mat-panel-title matTooltip="id: {{todo.$oid}}">{{todo.owner}} </mat-panel-title>
 
             </mat-expansion-panel-header>
-            <mat-panel-description>Is in {{todo.category}} category</mat-panel-description>
-            <mat-panel-description>Is owned by {{todo.owner}} </mat-panel-description>
+            <mat-panel-description>Has a status of '{{todo.status}}'</mat-panel-description>
+            <mat-panel-description>Is in the '{{todo.category}}' category</mat-panel-description>
             <mat-panel-description>The body text is '{{todo.body}}' </mat-panel-description>
           </mat-expansion-panel>
         </mat-accordion>

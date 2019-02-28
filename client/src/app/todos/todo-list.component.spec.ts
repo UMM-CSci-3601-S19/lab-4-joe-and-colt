@@ -94,6 +94,26 @@ describe('Todo list', () => {
       .subscribe(x => expect(todoList.filteredTodos.length).toBe(2));
   });
 
+  it('todo list filters by status', () => {
+    expect(todoList.filteredTodos.length).toBe(3);
+    todoList.todoStatus = 'complete';
+    const a: Observable<Todo[]> = todoList.refreshTodos();
+    a.do(x => Observable.of(x))
+      .subscribe(x => expect(todoList.filteredTodos.length).toBe(1));
+    todoList.todoStatus = 'incomplete';
+    const b: Observable<Todo[]> = todoList.refreshTodos();
+    b.do(x => Observable.of(x))
+      .subscribe(x => expect(todoList.filteredTodos.length).toBe(2));
+  });
+
+  it('todo list gives nothing when given an invalid status', () => {
+    expect(todoList.filteredTodos.length).toBe(3);
+    todoList.todoStatus = 'guawnui';
+    const a: Observable<Todo[]> = todoList.refreshTodos();
+    a.do(x => Observable.of(x))
+      .subscribe(x => expect(todoList.filteredTodos.length).toBe(0));
+  });
+
   it('todo list filters by category', () => {
     expect(todoList.filteredTodos.length).toBe(3);
     todoList.todoCategory = 'video games';

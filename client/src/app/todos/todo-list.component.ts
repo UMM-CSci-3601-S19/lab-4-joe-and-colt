@@ -2,7 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {TodoListService} from './todo-list.service';
 import {Todo} from './todo';
 import {Observable} from 'rxjs/Observable';
-
+import {MatDialog} from '@angular/material';
+import {AddTodoComponent} from './add-todo.component';
 
 @Component({
   selector: 'app-todo-list-component',
@@ -17,21 +18,45 @@ export class TodoListComponent implements OnInit {
   public filteredTodos: Todo[];
 
   public todoOwner: string;
-  public todoStatus: boolean;
+  public todoStatus: string;
   public todoBody: string;
   public todoCategory: string;
 
 
+  openDialog(): void {
+    const newTodo: Todo = {_id: '', owner: '', status: '', body: '', category: ''};
+    const dialogRef = this.dialog.open(AddTodoComponent, {
+      width: '500px',
+      data: {todo: newTodo}
+    });
+
+    dialogRef.afterClosed().subscribe(newTodo => {
+      if (newTodo != null) {
+        this.todoListService.addNewTodo(newTodo).subscribe(
+          result => {
+            this.highlightedID = result;
+            this.refreshTodos();
+          },
+          err => {
+            // This should probably be turned into some sort of meaningful response.
+            console.log('There was an error adding the todo.');
+            console.log('The newTodo or dialogResult was ' + newTodo);
+            console.log('The error was ' + JSON.stringify(err));
+          });
+      }
+    });
+  }
   // Inject the TodoListService into this component.
   // That's what happens in the following constructor.
   //
   // We can call upon the service for interacting
   // with the server.
 
-  constructor(private todoListService: TodoListService) {
+  constructor(private todoListService: TodoListService, public dialog: MatDialog) {
 
   }
-  public filterTodos(searchOwner: string, searchStatus: boolean, searchBody: string, searchCategory: string): Todo[] {
+
+  public filterTodos(searchOwner: string, searchStatus: string, searchBody: string, searchCategory: string): Todo[] {
 
     this.filteredTodos = this.todos;
 
@@ -48,9 +73,13 @@ export class TodoListComponent implements OnInit {
     // Filter by status
     if (searchStatus != null) {
       this.filteredTodos = this.filteredTodos.filter(todo => {
-        return true;
+        return function (status) {
+          if(searchStatus==="complete")return true;
+          if(searchStatus==="incomplete")return false;
+        }(todo.status)==todo.status;
       });
     }
+
 
     // Filter by body
     if (searchBody != null){
@@ -71,11 +100,7 @@ export class TodoListComponent implements OnInit {
     return this.filteredTodos;
   }
 
-  // public completeTodos (statusString){
-  //   if(statusString == "complete"){return true;}
-  //   if(statusString == "incomplete"){return false;}
-  //   return null;
-  // }
+
 
   /**
    * Starts an asynchronous operation to update the todos list

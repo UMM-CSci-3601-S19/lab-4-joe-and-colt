@@ -9,17 +9,17 @@ import {environment} from '../../environments/environment';
 @Injectable()
 export class TodoListService {
   readonly baseUrl: string = environment.API_URL + 'todo';
-  private todoUrl: string = this.baseUrl;
+  public todoUrl: string = this.baseUrl;
 
   constructor(private http: HttpClient) {
   }
 
   getTodos(): Observable<Todo[]> {
-    return this.httpClient.get<Todo[]>(this.todoUrl);
+    return this.http.get<Todo[]>(this.todoUrl);
   }
 
   getTodoById(id: string): Observable<Todo> {
-    return this.httpClient.get<Todo>(this.todoUrl + '/' + id);
+    return this.http.get<Todo>(this.todoUrl + '/' + id);
   }
 
   addNewTodo(newTodo: Todo): Observable<string> {

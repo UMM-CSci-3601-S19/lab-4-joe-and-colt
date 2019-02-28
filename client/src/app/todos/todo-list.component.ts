@@ -22,9 +22,11 @@ export class TodoListComponent implements OnInit {
   public todoBody: string;
   public todoCategory: string;
 
+  private highlightedID: string = '';
+
 
   openDialog(): void {
-    const newTodo: Todo = {_id: '', owner: '', status: '', body: '', category: ''};
+    const newTodo: Todo = {id: '', owner: '', status: false, body: '', category: ''};
     const dialogRef = this.dialog.open(AddTodoComponent, {
       width: '500px',
       data: {todo: newTodo}
@@ -55,6 +57,11 @@ export class TodoListComponent implements OnInit {
   constructor(private todoListService: TodoListService, public dialog: MatDialog) {
 
   }
+
+  isHighlighted(todo: Todo): boolean {
+    return todo._id['$oid'] === this.highlightedID;
+  }
+
 
   public filterTodos(searchOwner: string, searchStatus: string, searchBody: string, searchCategory: string): Todo[] {
 
@@ -100,8 +107,6 @@ export class TodoListComponent implements OnInit {
     return this.filteredTodos;
   }
 
-
-
   /**
    * Starts an asynchronous operation to update the todos list
    *
@@ -125,6 +130,17 @@ export class TodoListComponent implements OnInit {
     return todos;
   }
 
+  loadService(): void {
+    this.todoListService.getTodos(this.todoCompany).subscribe(
+      todos => {
+        this.todos = todos;
+        this.filteredTodos = this.todos;
+      },
+      err => {
+        console.log(err);
+      }
+    );
+  }
 
   ngOnInit(): void {
     this.refreshTodos();

@@ -64,6 +64,7 @@ describe('Todo list', () => {
       fixture = TestBed.createComponent(TodoListComponent);
       todoList = fixture.componentInstance;
       fixture.detectChanges();
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999999;
     });
   }));
 

@@ -11,7 +11,7 @@ browser.driver.controlFlow().execute = function () {
   //This delay is only put here so that you can watch the browser do its' thing.
   //If you're tired of it taking long you can remove this call
   origFn.call(browser.driver.controlFlow(), function () {
-    return protractor.promise.delayed(0);
+    return protractor.promise.delayed(100);
   });
 
   return origFn.apply(browser.driver.controlFlow(), args);
@@ -22,6 +22,8 @@ describe('Todo list', () => {
 
   beforeEach(() => {
     page = new TodoPage();
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999999;
+
   });
 
   it('should get and highlight Todo Name attribute ', () => {
@@ -29,41 +31,90 @@ describe('Todo list', () => {
     expect(page.getTodoTitle()).toEqual('Todos');
   });
 
-  it('should type something in filter owner box and check that it returned correct element', () => {
+
+  it('Should have an add todo button', () => {
     page.navigateTo();
-    page.typeAnOwner("l");
-    expect(page.getUniqueTodo("58af3a600343927e48e8720f")).toEqual("Blanche");
-    page.backspace();
-    page.typeAnOwner("Barry");
-    expect(page.getUniqueTodo("58af3a600343927e48e87214")).toEqual("Barry");
+    expect(page.elementExistsWithId('addNewTodo')).toBeTruthy();
   });
 
-  it('should type a category and return 79 elements and 13 Fry and 16 dawn', () => {
+
+  it('Should open a dialog box when add todo button is clicked', () => {
     page.navigateTo();
-    page.getTodoByCategory('homework');
-
-    expect(page.getUniqueTodo("58af3a600343927e48e8721d")).toEqual("Dawn");
-
-    expect(page.getUniqueTodo("58af3a600343927e48e87221")).toEqual("Fry");
-
+    expect(page.elementExistsWithCss('add-todo')).toBeFalsy('There should not be a modal window yet');
+    page.click('addNewTodo');
+    expect(page.elementExistsWithCss('add-todo')).toBeTruthy('There should be a modal window now');
   });
 
-  it('should type in complete and return 143 elements with 27 Fry', () => {
-    page.navigateTo();
-    page.getTodoByStatus('complete');
-    expect(page.getUniqueTodo("58af3a600343927e48e87237")).toEqual("Fry")
-  });
+  describe('Add Todo', () => {
 
-  it('should type in incomplete and return 157 elements with 31 Workman', () => {
-    page.navigateTo();
-    page.getTodoByStatus('incomplete');
-    expect(page.getUniqueTodo("58af3a600343927e48e87222")).toEqual("Workman")
-  });
+    beforeEach(() => {
+      page.navigateTo();
+      page.click('addNewTodo');
+    });
 
-  it('should type in anim and return 94 elements with 18 Roberta', () => {
-    page.navigateTo();
-    page.getTodoByBody('anim');
-    expect(page.getUniqueTodo("58af3a600343927e48e87224")).toEqual("Roberta")
-  });
+    it('Should actually add the todo with the information we put in the fields', () => {
+      page.navigateTo();
+      page.click('addNewTodo');
+      page.field('ownerField').sendKeys('123456OwnerOwner');
+      // Need to clear the status field because the default value is false.
+      page.field('statusField').clear();
+      page.field('statusField').sendKeys('true');
+      page.field('bodyField').sendKeys('body text');
+      page.field('categoryField').sendKeys('homework');
+      expect(page.button('confirmAddTodoButton').isEnabled()).toBe(true);
+      page.click('confirmAddTodoButton');
+      //Does not actually do a good job of checking whether it actually adds a to-do
+      //This and the test below could both pass if it added one to-do with these fields,
+      //but doesn't add one on subsequent attempts, which is not the behavior we want
 
+    });
+
+    it('should type something in filter owner box and check that it returned correct element', () => {
+      page.navigateTo();
+      page.typeAnOwner("123456OwnerOwner");
+      page.getTodoByBody('body text');
+      page.getTodoByCategory('homework');
+      expect(page.getTodoByClass()).toEqual("123456OwnerOwner");
+    });
+
+
+
+    it('should type something in filter owner box and check that it returned correct element', () => {
+      page.navigateTo();
+      page.typeAnOwner("l");
+      expect(page.getTodoByClass()).toEqual("Blanche");
+      page.backspace();
+      page.typeAnOwner("Barry");
+      expect(page.getTodoByClass()).toEqual("Barry");
+    });
+
+    it('should type a category and return top value Blanche', () => {
+      page.navigateTo();
+      page.getTodoByCategory('homework');
+
+      expect(page.getTodoByClass()).toEqual("Blanche");
+
+
+    });
+
+    it('should type in complete and return top result Blanche', () => {
+      page.navigateTo();
+      page.getTodoByStatus('complete');
+      expect(page.getTodoByClass()).toEqual("Blanche");
+    });
+
+    it('should type in incomplete and return top result Fry', () => {
+      page.navigateTo();
+      page.getTodoByStatus('incomplete');
+      expect(page.getTodoByClass()).toEqual("Fry");
+    });
+
+    it('should type in anim and return top result Fry', () => {
+      page.navigateTo();
+      page.getTodoByBody('anim');
+      expect(page.getTodoByClass()).toEqual("Fry");
+    });
+
+
+  });
 });

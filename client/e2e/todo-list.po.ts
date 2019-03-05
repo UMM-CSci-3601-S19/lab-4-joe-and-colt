@@ -1,8 +1,8 @@
-
-import {browser, by, element, Key} from 'protractor';
+import {browser, by, element, promise, ElementFinder} from 'protractor';
+import {Key} from 'selenium-webdriver';
 
 export class TodoPage {
-  navigateTo() {
+  navigateTo(): promise.Promise<any> {
     return browser.get('/todos');
   }
 
@@ -62,6 +62,47 @@ export class TodoPage {
     this.highlightElement(by.id(id));
 
     return todo;
+  }
+
+  getTodoByClass() {
+    let todo = element(by.className("mat-expansion-panel")).getText();
+    this.highlightElement(by.className("mat-expansion-panel"));
+
+    return todo;
+  }
+
+  getTodos() {
+    return element.all(by.className('todos'));
+  }
+
+  elementExistsWithId(idOfElement: string): promise.Promise<boolean> {
+    if (element(by.id(idOfElement)).isPresent()) {
+      this.highlightElement(by.id(idOfElement));
+    }
+    return element(by.id(idOfElement)).isPresent();
+  }
+
+  elementExistsWithCss(cssOfElement: string): promise.Promise<boolean> {
+    return element(by.css(cssOfElement)).isPresent();
+  }
+
+  click(idOfButton: string): promise.Promise<void> {
+    this.highlightElement(by.id(idOfButton));
+    return element(by.id(idOfButton)).click();
+  }
+
+  field(idOfField: string) {
+    return element(by.id(idOfField));
+  }
+
+  button(idOfButton: string) {
+    this.highlightElement(by.id(idOfButton));
+    return element(by.id(idOfButton));
+  }
+
+  getTextFromField(idOfField: string) {
+    this.highlightElement(by.id(idOfField));
+    return element(by.id(idOfField)).getText();
   }
 }
 

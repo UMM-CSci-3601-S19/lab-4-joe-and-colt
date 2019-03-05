@@ -126,6 +126,7 @@ describe('Misbehaving User List', () => {
     userListServiceStub = {
       getUsers: () => Observable.create(observer => {
         observer.error('Error-prone observable');
+        jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999999;
       })
     };
 

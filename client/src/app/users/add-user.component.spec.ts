@@ -35,6 +35,7 @@ describe('Add user component', () => {
     calledClose = false;
     fixture = TestBed.createComponent(AddUserComponent);
     addUserComponent = fixture.componentInstance;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999999;
   });
 
   // Much of the code for validation was created with a lot of exploration and helpful resources including:

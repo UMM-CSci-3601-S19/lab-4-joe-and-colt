@@ -26,7 +26,7 @@ public class TodoControllerSpec {
   public void clearAndPopulateDB() {
     MongoClient mongoClient = new MongoClient();
     MongoDatabase db = mongoClient.getDatabase("test");
-    MongoCollection<Document> todoDocuments = db.getCollection("todo");
+    MongoCollection<Document> todoDocuments = db.getCollection("todos");
     todoDocuments.drop();
     List<Document> testTodos = new ArrayList<>();
     testTodos.add(Document.parse("{\n" +

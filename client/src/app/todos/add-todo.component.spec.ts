@@ -26,6 +26,7 @@ describe('Add todo component', () => {
         {provide: MatDialogRef, useValue: mockMatDialogRef},
         {provide: MAT_DIALOG_DATA, useValue: null},
         {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true}]
+
     }).compileComponents().catch(error => {
       expect(error).toBeNull();
     });
@@ -35,6 +36,7 @@ describe('Add todo component', () => {
     calledClose = false;
     fixture = TestBed.createComponent(AddTodoComponent);
     addTodoComponent = fixture.componentInstance;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 999999999;
   });
 
   // Much of the code for validation was created with a lot of exploration and helpful resources including:

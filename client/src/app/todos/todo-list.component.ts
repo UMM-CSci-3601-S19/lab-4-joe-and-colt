@@ -80,11 +80,11 @@ export class TodoListComponent implements OnInit {
     // Filter by status
     if (searchStatus != null) {
       this.filteredTodos = this.filteredTodos.filter(todo => {
-        return function (status) {
+        if(searchStatus !== ""){return !searchStatus || function (status) {
           if(searchStatus==="complete")return true;
           if(searchStatus==="incomplete")return false;
         }(todo.status)==todo.status;
-      });
+      }else {return true}});
     }
 
 

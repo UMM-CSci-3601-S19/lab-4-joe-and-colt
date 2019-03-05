@@ -118,5 +118,68 @@ public class TodoControllerSpec {
     assertEquals("Names should match", expectedNames, names);
   }
 
+  @Test
+  public void getSamById() {
+    String jsonResult = todoController.getTodo(samsId.toHexString());
+    Document sam = Document.parse(jsonResult);
+    assertEquals("Name should match", "Sam", sam.get("owner"));
+    String noJsonResult = todoController.getTodo(new ObjectId().toString());
+    assertNull("No name should match", noJsonResult);
+
+  }
+
+  @Test
+  public void addTodoTest() {
+    String newId = todoController.
+      addNewTodo("Brian", "true", "misc", "test body");
+
+    assertNotNull("Add new todo should return true when todo is added,", newId);
+    Map<String, String[]> argMap = new HashMap<>();
+    argMap.put("category", new String[]{"misc"});
+    String jsonResult = todoController.getTodos(argMap);
+    BsonArray docs = parseJsonArray(jsonResult);
+
+    List<String> name = docs
+      .stream()
+      .map(TodoControllerSpec::getOwner)
+      .sorted()
+      .collect(Collectors.toList());
+    assertEquals("Should return name of new todo", "Brian", name.get(0));
+  }
+
+  @Test
+  public void getChris() {
+    Map<String, String[]> argMap = new HashMap<>();
+    argMap.put("owner", new String[]{"Chris"});
+    String jsonResult = todoController.getTodos(argMap);
+    BsonArray docs = parseJsonArray(jsonResult);
+    assertEquals("Should be 1 todo", 1, docs.size());
+    List<String> name = docs
+      .stream()
+      .map(TodoControllerSpec::getOwner)
+      .sorted()
+      .collect(Collectors.toList());
+    List<String> expectedName = Arrays.asList("Chris");
+    assertEquals("Names should match", expectedName, name);
+
+  }
+
+  @Test
+  public void getPat() {
+    Map<String, String[]> argMap = new HashMap<>();
+    argMap.put("owner", new String[]{"Pat"});
+    String jsonResult = todoController.getTodos(argMap);
+    BsonArray docs = parseJsonArray(jsonResult);
+    assertEquals("Should be 1 todo", 1, docs.size());
+    List<String> name = docs
+      .stream()
+      .map(TodoControllerSpec::getOwner)
+      .sorted()
+      .collect(Collectors.toList());
+    List<String> expectedName = Arrays.asList("Pat");
+    assertEquals("Names should match", expectedName, name);
+
+  }
+
 
 }

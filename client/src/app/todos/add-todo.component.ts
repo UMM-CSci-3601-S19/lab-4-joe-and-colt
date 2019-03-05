@@ -27,6 +27,7 @@ export class AddTodoComponent implements OnInit {
         Validators.pattern('^[A-Za-z0-9\\s]+[A-Za-z0-9\\s]+$(\\.0-9+)?'),
         Validators.required
       ])),
+      owner: new FormControl('owner'),
       status: new FormControl('status'),
       body: new FormControl('body'),
       category: new FormControl('category')

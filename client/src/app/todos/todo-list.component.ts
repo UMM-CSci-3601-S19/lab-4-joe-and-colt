@@ -59,7 +59,7 @@ export class TodoListComponent implements OnInit {
   }
 
   isHighlighted(todo: Todo): boolean {
-    return todo._id['$oid'] === this.highlightedID;
+    return todo.id['$oid'] === this.highlightedID;
   }
 
 
@@ -131,7 +131,7 @@ export class TodoListComponent implements OnInit {
   }
 
   loadService(): void {
-    this.todoListService.getTodos(this.todoCompany).subscribe(
+    this.todoListService.getTodos().subscribe(
       todos => {
         this.todos = todos;
         this.filteredTodos = this.todos;
